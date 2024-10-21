@@ -1,0 +1,19 @@
+{
+	"files.exclude": {
+		"**/.DS_Store": false,
+		"**/.hg": false,
+		"**/.svn": false,
+		"**/*.aux": true,
+		"**/*.fdb_latexmk": true,
+		"**/*.fls": true,
+		"**/*.log": true,
+		"**/*.meta": true,
+		"**/*.out": true,
+		"**/*.synctex.gz": true,
+		"**/*.synctex(busy)": true,
+		"**/*.toc": true,
+		"**/CVS": false,
+		"**/Thumbs.db": false,
+	},
+	"ltex.language": "de-DE",
+}

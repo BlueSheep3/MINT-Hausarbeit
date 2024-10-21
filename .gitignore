@@ -1,0 +1,14 @@
+**/.DS_Store
+**/.hg
+**/.svn
+**/*.aux
+**/*.fdb_latexmk
+**/*.fls
+**/*.log
+**/*.meta
+**/*.out
+**/*.synctex.gz
+**/*.synctex(busy
+**/*.toc
+**/CVS
+**/Thumbs.db
