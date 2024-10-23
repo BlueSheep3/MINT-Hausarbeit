@@ -15,16 +15,16 @@ Es gibt hauptsächlich zwei Varianten,
 wie Voxel Engines implementiert werden:
 
 \begin{itemize}
-	\item Volumengrafik:
+	\item \href{https://de.wikipedia.org/wiki/Volumengrafik}{Volumengrafik}:
 	Es wird ein komplett neues Verfahren entwickelt,
 	um die Voxels zu rendern, welches direkt mit
 	den Voxels arbeitet. Dies hat zwar gute
 	Performance, hat aber auch die Limitation,
 	dass alle Voxel nur einfache Würfel seien können.
 
-	\item Polygon Meshes:
-	Die Voxels werden zuerst in ein 3D Mesh von
-	Dreiecken (oder allgemein Polygonen) umgewandelt
+	\item \href{https://de.wikipedia.org/wiki/Polygonnetz}{Polygonnetz}:
+	Die Voxels werden zuerst in viele
+	Dreiecke (oder allgemein Polygone) umgewandelt
 	und dann von einem typischen 3D Renderer angezeigt.
 	Somit muss man keinen neuen Renderer erstellen und
 	kann auch andere Modelle als nur Würfel anzeigen,
@@ -34,12 +34,12 @@ wie Voxel Engines implementiert werden:
 
 Wegen der einfacheren Implementation, und dass man
 komplexere Modelle als nur Würfel erstellen kann,
-werden in den meisten Spielen die Polygon Mesh
+werden in den meisten Spielen die Polygonnetz
 Variante bevorzugt.
 
 \begin{figure}[ht]
 	\begin{minipage}[c]{0.48\textwidth}
-Mit der Polygon Meshes Implementation sieht dann ein
+Mit der Polygonnetz Implementation sieht dann ein
 Voxel wie rechts gezeigt aus.
 Die grünen Linien zeigen dabei wie es in Dreiecke
 eingeteilt ist.
