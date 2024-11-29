@@ -1,0 +1,45 @@
+\subsection{Binäres Culling}
+
+Wir können beide Probleme der ersten Implementation
+mit einer neuen Methode lösen.
+Wir betrachten dabei eine Reihe von Voxels als einen
+64-Bit Integer, wobei die einzelnen Bits darstellen,
+ob sich dort ein Voxel befindet.
+Es werden dabei 64 Bits gebraucht und nicht nur 32,
+da man für das Culling auch wissen muss,
+welche Voxels sich am Rand eines Chunks befinden,
+und ein Chunk 32 Voxels lang ist.
+Somit könnten die Voxels in einem Chunk
+(und dem Rand) als ein 2 dimensionales
+Array von 64-Bit Integers dargestellt werden,
+wobei die 2 Dimensionen des Arrays die
+$y$- und $z$-Achse darstellen und der Integer eine
+Reihe von Voxels in der $x$-Achse darstellt.
+Der Vorteil davon ist, dass wir somit in der
+$x$-Achse binäre Arithmetik anwenden können für
+das Culling, was sehr schnell ist.
+
+% TODO better explanation
+Beim Culling brauchen müssen wir die Seiten von
+Voxels finden, die nicht von einem anderen Voxel
+verdeckt werden.
+Mit binärer Arithmetik geht dies jetzt sehr einfach:
+% TODO better styling of code
+\begin{verbatim}
+fn find_faces(bits: u32) -> u32 {
+    bits & !(bits >> 1)
+}
+\end{verbatim}
+Diese Funktion gibt eine Bitmaske für alle Voxels,
+die von links sichtbar sind.
+Definiert man also eine Funktion mit \verb|bits << 1|,
+dann bekommt man alle, die von rechts sichtbar sind.
+
+Um dies für jede Achse zu wiederholen,
+erstellt man so ein Array für jede Achse.
+Diese kann man mit nur einem Zugriff pro Voxel
+wie folgt erstellen:
+
+% TODO insert code for creating bit masks
+
+% TODO benchmark binary culling

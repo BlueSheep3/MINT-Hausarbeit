@@ -1,0 +1,62 @@
+\subsection{Erste Implementation}
+
+Die jetzige Methode ein Polygonnetz der Voxels
+zu erstellen besteht darin, für jeden Voxel
+ein Würfelnetz zu erstellen.
+Um dies also zu cullen, überprüft man
+noch die Nachbarvoxels, um zu entscheiden,
+welche Seiten sichtbar sind, und erstellt nur
+die sichtbaren Seiten.
+
+% TODO maybe show some of the code here
+
+Da die Spielwelt unendlich groß ist, muss sie
+in viele einzelne Polygonnetze aufgeteilt werden.
+Somit ist die Welt in sogenannte \gqq{Chunks}
+eingeteilt, die $32 \times 32 \times 32$ Voxels
+beinhalten. Das Polygonnetz, das die Voxels in einem
+Chunk anzeigt, werde ich als
+\gqq{Chunknetz} bezeichnen.
+
+% TODO insert the image of chunk borders somewhere here
+
+Da das Erstellen eines Chunknetzes lang dauern kann,
+soll das Spiel nicht darauf warten,
+da dies sonst sichtbar beim Spielen wäre.
+Deswegen werden die Chunknetze in separaten
+\href{https://de.wikipedia.org/wiki/Thread_(Informatik)}{Threads}
+erstellt.
+Zudem können somit mehrere Chunknetze gleichzeitig
+erstellt werden.
+
+% TODO probably put the benchmark here
+
+\vspace{0.3cm}
+
+Dadurch entsteht aber ein neues Problem: \\
+Wenn mehrere Threads zugriff auf die gleichen Daten
+haben, muss dieser Zugriff synchronisiert werden,
+da sonst eine
+\href{https://de.wikipedia.org/wiki/Wettlaufsituation}{Wettlaufsituation}
+(genauer gesagt ein Data Race) entstehen kann.
+\footnote{\url{https://doc.rust-lang.org/nomicon/races.html}}
+Durch diese Synchronisierung müsste aber jeder Zugriff
+zu Chunks auf andere Threads warten, was das gesamte
+Spiel langsamer machen würde. Deswegen werden die
+Daten der nötigen Chunks zu dem Thread rüberkopiert.
+
+Culling braucht Information aus den benachbarten
+Chunks, um zu entscheiden, ob die Ränder des Chunks
+sichtbar sind. Somit müssen die 6 Nachbarchunks
+auch zu dem Thread rüberkopiert werden, was sehr viele
+Daten sind. Man könnte zwar nur die Voxels
+rüberkopieren, die am Rand des Chunks sind,
+aber wir werden gleich eine Methode sehen,
+die dieses Problem und andere auf einmal löst.
+
+\vspace{0.3cm}
+
+Ein weiteres Problem besteht darin, dass dieser
+Algorithmus für jeden Voxel noch die 6 Nachbarn
+betrachten muss. Somit wird jeder Voxel 7-mal
+betrachtet.
