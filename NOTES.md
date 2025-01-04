@@ -22,7 +22,6 @@
 - figure out how textures are even possible
   - should this really be in the Greedy Meshing section?
 - exact benchmarks
-  - wait for bevy 0.15 first, as that will have general performance changes
 - thicker outlines in all images
 - definetly include actual code somewhere
   - but where?

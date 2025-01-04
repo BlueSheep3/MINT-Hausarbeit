@@ -6,10 +6,13 @@
 \usepackage{adjustbox}
 \usepackage{graphicx}
 \usepackage{xcolor}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
 
 % global config
 \newcommand{\gqq}[1]{\glqq{#1}\grqq}
 \setlength{\skip\footins}{1cm}
+\pgfplotsset{compat=1.18} % without this i get a warning
 
 \hypersetup{
 	colorlinks,
@@ -17,6 +20,8 @@
 	citecolor = {blue!50!black},
 	urlcolor = {blue!70!black},
 }
+
+\input{Utils/BenchmarkGraph}
 
 
 \begin{document}
