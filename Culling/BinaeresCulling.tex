@@ -24,52 +24,54 @@ Beim Culling müssen wir die Seiten von
 Voxels finden, die nicht von einem anderen Voxel
 verdeckt werden.
 Mit binärer Arithmetik geht dies jetzt sehr einfach:
-% TODO better styling of code
-\begin{verbatim}
+
+\begin{lstlisting}[language=Rust]
 fn find_faces(mask: u64) -> u32 {
-  ((mask & !(mask >> 1)) >> 1) as u32
+	((mask & !(mask >> 1)) >> 1) as u32
 }
-\end{verbatim}
+\end{lstlisting}
+%
 Diese Funktion gibt eine Bitmaske für alle Voxels,
 die von links sichtbar sind.
-Dabei ist das \verb|mask & !(mask >> 1)| zuständig
+Dabei ist das \code{mask \& !(mask >> 1)} zuständig
 die sichtbaren Seiten zu erkennen.
 Definiert man also eine Funktion mit
-\verb|mask & !(mask << 1)|, dann bekommt man alle,
+\code{mask \& !(mask << 1)}, dann bekommt man alle,
 die von rechts sichtbar sind.
-Das \verb|((..) >> 1) as u32| ist dann zuständig
+Das \code{((..) >> 1) as u32} ist dann zuständig
 die einzelnen Bits, die den Rand des Chunks beschreiben,
 zu entfernen, da diese nicht mehr gebraucht sind.
 Diese neue Bitmaske kann dann wie folgt verwendet
 werden, um die Seiten der Voxels zu kreieren:
 
-\begin{verbatim}
+\begin{lstlisting}[language=Rust]
 let mut mask = /* Bitmaske von dieser Reihe von Voxels */;
 let mut k = 0;
 while mask != 0 {
-  let zeros = mask.trailing_zeros();
-  mask = (mask >> zeros) & !1;
-  k += zeros;
-  // berechne die position dieser Seite basierend auf k...
+	let zeros = mask.trailing_zeros();
+	mask = (mask >> zeros) & !1;
+	k += zeros;
+	// berechne die position dieser Seite basierend auf k,
+	// und erstelle dann ein Mesh dafuer...
 }
-\end{verbatim}
+\end{lstlisting}
 
 Um diese Funktion anwenden zu können, müssen
 wir die Bitmaske aber erst konstruieren.
 Dies werden wir für jede Achse wiederholen,
 da jede Bitmaske nur für eine Achse anwendbar ist:
 
-\begin{verbatim}
+\begin{lstlisting}[language=Rust]
 for (pos, block) in chunk.blocks.iter_xyz() {
-  let BlockInChunkPos { x, y, z } = pos;
-  let [x, y, z] = [x as usize, y as usize, z as usize];
-  if block_models[&block.id].should_cull {
-    blocks_mask[Axis::X][y][z] |= 1 << (x + 1);
-    blocks_mask[Axis::Y][x][z] |= 1 << (y + 1);
-    blocks_mask[Axis::Z][x][y] |= 1 << (z + 1);
-  }
+	let BlockInChunkPos { x, y, z } = pos;
+	let [x, y, z] = [x as usize, y as usize, z as usize];
+	if block_models[&block.id].should_cull {
+		blocks_mask[Axis::X][y][z] |= 1 << (x + 1);
+		blocks_mask[Axis::Y][x][z] |= 1 << (y + 1);
+		blocks_mask[Axis::Z][x][y] |= 1 << (z + 1);
+	}
 }
-\end{verbatim}
+\end{lstlisting}
 
 Dabei brauchen wir auch nur einen Zugriff pro Voxel,
 während wir in der ersten Implementation 7 Zugriffe
@@ -127,42 +129,42 @@ Thread senden, der dann selbst eine Bitmaske erstellt.
 Diesmal habe ich nicht die einfachere Implementation
 benutzt, und habe wirklich nur den Rand rüberkopiert:
 
-\begin{verbatim}
+\begin{lstlisting}[language=Rust]
 pub fn chunk_padding_from_neighbour_chunks(
-  neighbours: FaceMap<&Chunk>
+	neighbours: FaceMap<&Chunk>
 ) -> ChunkPadding {
-  let mut chunk_padding = FaceMap::from_map(|_|
-    [[Air::BLOCK; CHUNK_LENGTH]; CHUNK_LENGTH]
-  );
+	let mut chunk_padding = FaceMap::from_map(|_|
+		[[Air::BLOCK; CHUNK_LENGTH]; CHUNK_LENGTH]
+	);
 
-  macro_rules! axes {
-    ($(($a:ident, $b:ident) in ($axis:expr, $axis_name:ident)
-    => [$x:expr, $y:expr, $z:expr]);* $(;)?) => {
-      $(
-      for $a in 0..CHUNK_LENGTH {
-        for $b in 0..CHUNK_LENGTH {
-          let mut pos = BlockInChunkPos::new($x, $y, $z);
+	macro_rules! axes {
+		($(($a:ident, $b:ident) in ($axis:expr, $axis_name:ident)
+		=> [$x:expr, $y:expr, $z:expr]);* $(;)?) => {
+			$(
+			for $a in 0..CHUNK_LENGTH {
+				for $b in 0..CHUNK_LENGTH {
+					let mut pos = BlockInChunkPos::new($x, $y, $z);
 
-          pos.$axis_name = CHUNK_LENGTH as u8 - 1;
-          let block = neighbours[$axis.face_neg()].blocks[pos];
-          chunk_padding[$axis.face_neg()][$a][$b] = block;
+					pos.$axis_name = CHUNK_LENGTH as u8 - 1;
+					let block = neighbours[$axis.face_neg()].blocks[pos];
+					chunk_padding[$axis.face_neg()][$a][$b] = block;
 
-          pos.$axis_name = 0;
-          let block = neighbours[$axis.face_pos()].blocks[pos];
-          chunk_padding[$axis.face_pos()][$a][$b] = block;
-        }
-      }
-      )*
-    };
-  }
-  axes! {
-    (y, z) in (Axis::X, x) => [0, y as u8, z as u8];
-    (x, z) in (Axis::Y, y) => [x as u8, 0, z as u8];
-    (x, y) in (Axis::Z, z) => [x as u8, y as u8, 0];
-  }
-  chunk_padding
+					pos.$axis_name = 0;
+					let block = neighbours[$axis.face_pos()].blocks[pos];
+					chunk_padding[$axis.face_pos()][$a][$b] = block;
+				}
+			}
+			)*
+		};
+	}
+	axes! {
+		(y, z) in (Axis::X, x) => [0, y as u8, z as u8];
+		(x, z) in (Axis::Y, y) => [x as u8, 0, z as u8];
+		(x, y) in (Axis::Z, z) => [x as u8, y as u8, 0];
+	}
+	chunk_padding
 }
-\end{verbatim}
+\end{lstlisting}
 
 
 % Binäres Culling 2 stats from: bench 07

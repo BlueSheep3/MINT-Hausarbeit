@@ -1,0 +1,29 @@
+\lstdefinelanguage{Rust}{
+	comment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	keywords={fn, let, mut, pub, impl, struct, enum, mod, use, crate, super, self, Self, as, const, static, ref, type, match, if, else, for, in, while, loop, break, continue, return, where, move, async, await, unsafe, trait, dyn, abstract, yield, macro, union, extern},
+	sensitive=true,
+	string=[b]{"},
+}
+
+\lstset{
+	language=Rust,
+	keywordstyle=\color{blue}\bfseries,
+	commentstyle=\color{gray},
+	stringstyle=\color{purple},
+	basicstyle=\ttfamily\small,
+	numberstyle=\tiny,
+	numbers=left,
+	stepnumber=1,
+	numbersep=6pt,
+	tabsize=2,
+	breaklines=false,
+	breakatwhitespace=fal,
+	showstringspaces=false,
+	backgroundcolor=\color{lightgray!15},
+	columns=fullflexible,
+}
+
+\newcommand{\code}[1]{
+	\colorbox{lightgray!15}{\texttt{#1}}
+}
