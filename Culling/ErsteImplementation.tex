@@ -35,6 +35,7 @@ erstellt werden.
 
 % dont know how to get rid of this
 % warning or what it means
+% Erste Implementation stats from: bench 01
 \benchgraph{1}{
 	algo                   & blue       & red       \\
 	Erste Implementation   & 12.834184  & 0.672563  \\
@@ -52,7 +53,9 @@ da sonst eine
 Durch diese Synchronisierung müsste aber jeder Zugriff
 zu Chunks auf andere Threads warten, was das gesamte
 Spiel langsamer machen würde. Deswegen werden die
-Daten der nötigen Chunks zu dem Thread rüberkopiert.
+Daten der nötigen Chunks zu dem Thread rüberkopiert,
+was langsam ist, da es sich hier über sehr große Daten
+handelt.
 
 Culling braucht Information aus den benachbarten
 Chunks, um zu entscheiden, ob die Ränder des Chunks
