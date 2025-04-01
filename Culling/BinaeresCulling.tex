@@ -76,25 +76,23 @@ for (pos, block) in chunk.blocks.iter_xyz() {
 Dabei brauchen wir auch nur einen Zugriff pro Voxel,
 während wir in der ersten Implementation 7 Zugriffe
 pro Voxel brauchten.
+Diese Bitmasken können wir erst erstellen und
+dann dem neuen Thread rübersenden.
 
 % TODO code of neighbour chunks
 
-% TODO transition
+Insgesamt erhalten wir folgende Performance:
 
 \vspace{0.3cm}
 
 % Binäres Culling 1 stats from: bench 03
-% FIXME this graph looks really weird
-\benchgraph{2}{
+\benchgraph{2}{0.65}{
 	algo                   & blue       & red       \\
 	Erste Implementation   & 12.834184  & 0.672563  \\
 	Binäres Culling 1      &  2.883930  & 5.155590  \\
 }
 
 \vspace{0.3cm}
-
-% TODO split up time of constructing the bitmask maybe?
-% ...maybe not, im not currently using it for anything
 
 Von 13,51 ms auf 8,04 ms ist eine Verbesserung
 von 40,5 \%. Das sieht erstmal gut aus,
@@ -166,10 +164,14 @@ pub fn chunk_padding_from_neighbour_chunks(
 }
 \end{lstlisting}
 
+Mit dieser Methode wird die Zeit viel mehr auf den
+separaten Thread verschoben, während die gesamte
+Zeit nur gering erhöht wurde:
+
+\vspace{0.3cm}
 
 % Binäres Culling 2 stats from: bench 07
-% FIXME this graph looks really weird
-\benchgraph{2}{
+\benchgraph{3}{0.4}{
 	algo                   & blue       & red       \\
 	Erste Implementation   & 12.834184  & 0.672563  \\
 	Binäres Culling 1      &  2.883930  & 5.155590  \\

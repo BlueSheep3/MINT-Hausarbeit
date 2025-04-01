@@ -1,15 +1,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % when adding a new algorithm to the graph you must:
 %   1. increase #1 by 1
-%   2. add the new values to #2
+%   2. add the new values to #3
 %   3. add the y coordinate to symbolic y coords below
+%   4. adjust #2 until it looks good
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newcommand{\benchgraph}[2]{
+\newcommand{\benchgraph}[3]{
 {
 
 \pgfplotstableread[row sep=\\,col sep=&]{
-	#2
+	#3
 }\benchdata
 
 \begin{tikzpicture}
@@ -19,7 +20,7 @@
 	\definecolor{redparttext}{RGB}{0, 0, 0}
 
 	\pgfmathsetmacro{\numbars}{#1}
-	\pgfmathsetmacro{\axisheight}{1.4 + \numbars * 1.4}
+	\pgfmathsetmacro{\axisheight}{1.6 + \numbars * 1.2}
 
 	\begin{axis}[
 		height = {\axisheight cm},
@@ -30,7 +31,7 @@
 		xlabel = {Zeit (ms)},
 		y dir = reverse,
 		ytick distance = 1,
-		enlarge y limits = 0.2,
+		enlarge y limits = #2,
 		symbolic y coords = {
 			{\ },
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -38,7 +39,7 @@
 			Binäres Culling 1,
 			Binäres Culling 2,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			{\ },
+			{\ \ },
 		},
 		y tick label style = {font=\scriptsize},
 		bar width = 0.6cm,

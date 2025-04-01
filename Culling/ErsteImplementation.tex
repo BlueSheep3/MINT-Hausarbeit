@@ -10,6 +10,13 @@ die sichtbaren Seiten.
 
 % TODO maybe show some of the code here
 
+\begin{figure}[ht]
+	\begin{minipage}[c]{0.49\textwidth}
+		\begin{center}
+\includegraphics[width=0.8\textwidth]{assets/Culling/ChunkBorders.png}
+		\end{center}
+	\end{minipage}
+	\begin{minipage}[c]{0.49\textwidth}
 Da die Spielwelt unendlich groß ist, muss sie
 in viele einzelne Polygonnetze aufgeteilt werden.
 Somit ist die Welt in sogenannte \gqq{Chunks}
@@ -17,8 +24,8 @@ eingeteilt, die $32 \times 32 \times 32$ Voxels
 beinhalten. Das Polygonnetz, das die Voxels in einem
 Chunk anzeigt, werde ich als
 \gqq{Chunknetz} bezeichnen.
-
-% TODO insert the image of chunk borders somewhere here
+	\end{minipage}\hfill
+\end{figure}
 
 Da das Erstellen eines Chunknetzes lang dauern kann,
 soll das Spiel nicht darauf warten,
@@ -36,7 +43,7 @@ erstellt werden.
 % dont know how to get rid of this
 % warning or what it means
 % Erste Implementation stats from: bench 01
-\benchgraph{1}{
+\benchgraph{1}{0.0}{
 	algo                   & blue       & red       \\
 	Erste Implementation   & 12.834184  & 0.672563  \\
 }
