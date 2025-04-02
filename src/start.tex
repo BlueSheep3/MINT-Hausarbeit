@@ -15,14 +15,14 @@ Es gibt hauptsächlich zwei Varianten,
 wie Voxel Engines implementiert werden:
 
 \begin{itemize}
-	\item \href{https://de.wikipedia.org/wiki/Volumengrafik}{Volumengrafik}:
+	\item \href{https://de.wikipedia.org/wiki/Volumengrafik}{Volumengrafik} \cite{wiki_volume}:
 	Es wird ein komplett neues Verfahren entwickelt,
 	um die Voxels zu rendern, welches direkt mit
 	den Voxels arbeitet. Dies hat zwar gute
 	Performance, hat aber auch die Limitation,
 	dass alle Voxel nur einfache Würfel seien können.
 
-	\item \href{https://de.wikipedia.org/wiki/Polygonnetz}{Polygonnetz}:
+	\item \href{https://de.wikipedia.org/wiki/Polygonnetz}{Polygonnetz} \cite{wiki_poly}:
 	Die Voxels werden zuerst in viele
 	Dreiecke (oder allgemein Polygone) umgewandelt
 	und dann von einem typischen 3D Renderer angezeigt.
@@ -68,7 +68,7 @@ Optimierung, die Anzahl der Dreiecke so weit wie
 möglich zu reduzieren.
 
 Die meisten Optimierungen in dieser Hausarbeit
-kommen von \url{https://youtu.be/qnGoGq7DWMc?si=Ke8vgcHWcgCdMGka}
-und \url{https://github.com/TanTanDev/binary_greedy_mesher_demo},
-und wurden dann noch ausgeweitet, damit sie auch für
+kommen von den Quellen \cite{yt_bin_greedy_mesher}
+und \cite{gh_bin_greedy_mesher}, und wurden dann
+noch ausgeweitet, damit sie auch für
 Voxels mit Texturen funktionieren.

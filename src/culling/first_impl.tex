@@ -32,7 +32,7 @@ soll das Spiel nicht darauf warten,
 da dies sonst sichtbar beim Spielen wäre.
 Deswegen werden die Chunknetze in separaten
 \href{https://de.wikipedia.org/wiki/Thread_(Informatik)}{Threads}
-erstellt.
+\cite{wiki_thread} erstellt.
 Zudem können somit mehrere Chunknetze gleichzeitig
 erstellt werden.
 
@@ -55,8 +55,8 @@ Wenn mehrere Threads zugriff auf die gleichen Daten
 haben, muss dieser Zugriff synchronisiert werden,
 da sonst eine
 \href{https://de.wikipedia.org/wiki/Wettlaufsituation}{Wettlaufsituation}
-(genauer gesagt ein Data Race) entstehen kann.
-\footnote{\url{https://doc.rust-lang.org/nomicon/races.html}}
+\cite{wiki_wettlauf} (genauer gesagt ein Data Race)
+entstehen kann \cite{nomicon_races}.
 Durch diese Synchronisierung müsste aber jeder Zugriff
 zu Chunks auf andere Threads warten, was das gesamte
 Spiel langsamer machen würde. Deswegen werden die
