@@ -1,8 +1,26 @@
 \section{Greedy Meshing}
 
-% TODO
+Nun kommen wir zum zweiten Weg eine Voxel Engine
+zu optimieren:
 
-{ \input{greedy/first_impl.tex} }
+\begin{center}
+\includegraphics[width=0.4\textwidth]{../assets/greedy/stone_simple.png}
+\end{center}
+
+In der Grafik oben gibt es viele flache Flächen,
+die aus unnötig vielen Dreiecken aufgebaut sind.
+Wir könnten es wie folgt in Dreiecke einteilen,
+um die Anzahl zu reduzieren:
+
+\begin{center}
+\includegraphics[width=0.4\textwidth]{../assets/greedy/stone_greedy.png}
+\end{center}
+
+Somit werden zum Beispiel nur 2 Dreiecke verwendet,
+um eine 2x2 Fläche von Voxels zu bilden,
+anstatt 8 Dreiecke.
+
+Diese Optimierung wird \gqq{Greedy Meshing} genannt.
 
 { \input{greedy/binary.tex} }
 

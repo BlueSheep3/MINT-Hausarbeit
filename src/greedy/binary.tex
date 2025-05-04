@@ -1,3 +1,158 @@
 \subsection{Binäres Greedy Meshing}
 
-% TODO
+Ich habe erst geplant eine einfachere Implementation
+von Greedy Meshing zu machen, bevor ich es mit
+einem binären Algorithmus mache, aber dadurch,
+dass das Culling schon binär ist, ist die binäre
+Greedy Meshing Implementation sogar einfacher als
+eine andere.
+
+Der Grundgedanke in dieser Implementation ist,
+dass jedes Mal, wenn wir eine Seite betrachten,
+wir versuchen diese erst in eine Richtung so weit
+zu erweitern, bis keine Seite mehr da ist und dann
+erweitern wir diesen ganzen Streifen in die andere
+Richtung.
+Während man das macht, entfernt man immer die
+Bits in der Bitmaske, die gerade für diese Dreiecke
+verwendet werden, damit sie nicht später für andere
+Dreiecke wieder verwendet werden.
+
+% TODO include some images as a visualization of this
+
+Wenn wir eine Bitmaske haben, in der ein
+32-Bit Integer eine Reihe von Seiten darstellt,
+dann geht es sehr schnell die Streifen zu erkennen,
+da man mit den x86-Befehlen
+\href{https://www.felixcloutier.com/x86/bsf}{BSF} \cite{bsf}
+und
+\href{https://www.felixcloutier.com/x86/bsr}{BSR} \cite{bsr}
+die Anzahl von Nullen oder Einsen am Anfang oder
+Ende eines 32-Bit Integers mit einem einzigen
+Befehl berechnen kann.
+Zudem kann man mit einem einfachen bitweisen ODER
+überprüfen, ob der Streifen in die andere Richtung
+erweitert werden kann, und man kann die Einträge
+in der Bitmaske mit einem bitweisen UND entfernen.
+
+% TODO clean up this code
+\begin{lstlisting}[language=Rust]
+let mut mask_copy = array[j];
+let mut k = 0;
+while mask_copy != 0 {
+	let zeros = mask_copy.trailing_zeros();
+	mask_copy >>= zeros;
+	k += zeros;
+
+	let ones = mask_copy.trailing_ones();
+	mask_copy = mask_copy.checked_shr(ones).unwrap_or(0);
+	let from = k;
+	k += ones;
+
+	// this entire strip of blocks, as a bitmask.
+	// `<<` doesnt overflow in the way you would expect,
+	// so we use `checked_shl` here instead.
+	// `from != 32`, because otherwise `mask_copy == 0`, so the
+	// left shift there will never overflow (in any problematic way).
+	let ones_exp2 = 1_u32.checked_shl(ones).unwrap_or(0);
+	let strip_mask = (ones_exp2.wrapping_sub(1)) << from;
+
+	// expand the strip into a rectangle,
+	// and unset any bits along the way
+	array[j] &= !strip_mask;
+	let mut strip_expand = 0;
+	for next_mask in &mut array[(j + 1)..] {
+		if *next_mask & strip_mask == strip_mask {
+			strip_expand += 1;
+			*next_mask &= !strip_mask;
+		} else {
+			break;
+		}
+	}
+
+	// ...create a face
+}
+\end{lstlisting}
+
+Vielleicht ist ihnen aber schon aufgefallen,
+dass die Bitmaske, die wir für das Binäre Culling
+verwendet haben nicht in die richtige Richtung
+ausgerichtet ist.
+Dabei ist nämlich ein Integer eine Reihe von Voxels,
+die sich gegenseitig verdecken können, während wir
+hier eine Reihe von Voxels
+(oder genauer: sichtbare Seiten)
+brauchen, die nebeneinander sind.
+Deswegen müssen wir aus der Culling Bitmaske
+eine Bitmaske konstruieren,
+die getauschte Koordinaten hat.
+
+% FIXME might be a bit too weird to present this after
+% code above, considering this gets exectuted first
+\begin{lstlisting}[language=Rust]
+let culled_blocks_mask = // maske von Binaeres Culling
+let mut greedy_mask = Box::<FaceMap<ChunkArray2D<u32>>>::default();
+for (face, array2d) in culled_blocks_mask.iter_face() {
+	for (i, array) in array2d.iter().enumerate() {
+		for (j, mask) in array.iter().enumerate() {
+			let mut mask = *mask;
+			let mut k = 0;
+			while mask != 0 {
+				let zeros = mask.trailing_zeros();
+				mask = (mask >> zeros) & !1;
+				k += zeros;
+				greedy_mask[face][k as usize][i] |= 1 << j;
+			}
+		}
+	}
+}
+greedy_mask
+\end{lstlisting}
+% FIXME ensure that this footnote appears on the
+% same page as the code above
+\footnote{
+	Da horizontale Streifen von Voxels häufiger
+	vorkommen als vertikale Streifen, mache ich,
+	dass die Bitmasken in den $x$- und $z$-Achsen
+	beide horizontal ausgerichtet sind.
+	Deswegen wird in der wirklichen Implementation
+	für die $z$-Achse \code{i} und \code{j} getauscht.
+}
+
+Wenn wir nun diese Bitmaske haben, können wir mit dem
+oben genannten Algorithmus die Seiten zu größeren
+Seiten kombinieren.
+Wenn wir also diese Information benutzen,
+um die Dreiecke größer zu machen sind wir
+schon mit Greedy Meshing fertig!
+
+\vspace{0.5cm}
+
+% Greedy Meshing 1 stats from: bench 11
+\benchgraph{4}{0.25}{
+	algo                   & blue       & red       \\
+	Erste Implementation   & 12.834184  & 0.672563  \\
+	Binäres Culling 1      &  2.883930  & 5.155590  \\
+	Binäres Culling 2      &  8.524388  & 0.448866  \\
+	Greedy Meshing 1       &  5.641821  & 0.425993  \\
+}
+
+% TODO recheck if this count is correct.
+% the improvement seems lower than expected.
+Mit diesem Algorithmus erhalten wir sogar bessere
+Performance, da wir weniger Dreiecke konstruieren
+müssen.
+Zudem ist die Anzahl von Dreiecken in einer
+typischen Spielwelt jetzt von
+1.857.984 Ecken und 928.992 Dreiecken
+runter auf 809.484 Ecken und 404.742 Dreiecken
+gesunken.
+Somit haben wir etwa 2,3-mal weniger Dreiecke.
+
+\vspace{0.7cm}
+
+{
+	\setlength{\parindent}{0pt}
+	... eigentlich sind wir aber noch nicht ganz fertig!\\
+	Wir haben noch ein Problem übersehen.
+}
