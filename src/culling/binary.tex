@@ -98,14 +98,15 @@ Von 13,51 ms auf 8,04 ms ist eine Verbesserung
 von 40,5 \%. Das sieht erstmal gut aus,
 jedoch hat sich die Zeit einen neuen Thread zu
 erstellen stark erhöht. Wir haben nämlich die Bitmaske
-erst auf dem Main Thread
-\footnote{Um genau zu sein, gibt es in Bevy
-nicht einen \gqq{Main} Thread, wo die meisten Sachen
-gemacht werden, sondern alles ist auf mehrere Threads
-verteilt. Jedoch müssen alle
-\href{https://bevy-cheatbook.github.io/programming/systems.html}{Systeme}
-\cite{bevy_systems} fertig sein, damit Bevy den nächsten
-Frame anzeigt, und das wird hier blockiert.}
+erst auf dem Main Thread\footnote{
+	Um genau zu sein, gibt es in Bevy
+	nicht einen \gqq{Main} Thread, wo die meisten Sachen
+	gemacht werden, sondern alles ist auf mehrere Threads
+	verteilt. Jedoch müssen alle
+	\href{https://bevy-cheatbook.github.io/programming/systems.html}{Systeme}
+	\cite{bevy_systems} fertig sein, damit Bevy den
+	nächsten Frame anzeigt, und das wird hier blockiert.
+}
 erstellt, damit nicht die
 gesamten Daten des Chunks rübergesendet werden müssen.
 Die Bitmaske zu erstellen braucht aber länger,
