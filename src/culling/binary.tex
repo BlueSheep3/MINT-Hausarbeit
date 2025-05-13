@@ -178,3 +178,25 @@ Zeit nur gering erhöht wurde:
 	Binäres Culling 1      &  2.883930  & 5.155590  \\
 	Binäres Culling 2      &  8.524388  & 0.448866  \\
 }
+
+
+\begin{figure}[ht]
+	\begin{minipage}[c]{0.63\textwidth}
+Anders als in \cite{yt_bin_greedy_mesher} und
+\cite{gh_bin_greedy_mesher} gibt es bei meinem
+Spiel auch Voxels, die nicht ein ganzer Würfel
+sind. Dafür funktioniert dieser Algorithmus nicht,
+da ein Voxel direkt neben diesem trotzdem sichtbar
+sein kann.
+
+Da in den meisten Fällen aber nur wenige von diesen
+\gqq{nicht-vollen} Voxels existieren, habe ich mich
+entschieden diese einfach in eine separate Bitmaske
+zu tun und auf diese dann kein Culling angewandt.
+	\end{minipage}
+	\begin{minipage}[c]{0.35\textwidth}
+		\begin{center}
+\includegraphics[width=0.8\textwidth]{../assets/culling/stair_next_to_stone.png}
+		\end{center}
+	\end{minipage}\hfill
+\end{figure}
