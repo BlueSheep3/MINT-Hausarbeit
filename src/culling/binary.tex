@@ -19,7 +19,6 @@ Der Vorteil davon ist, dass wir somit in der
 $x$-Achse binäre Arithmetik anwenden können für
 das Culling, was sehr schnell ist.
 
-% TODO better explanation
 Beim Culling müssen wir die Seiten von
 Voxels finden, die nicht von einem anderen Voxel
 verdeckt werden.
@@ -62,14 +61,47 @@ Dies werden wir für jede Achse wiederholen,
 da jede Bitmaske nur für eine Achse anwendbar ist:
 
 \begin{lstlisting}[language=Rust]
-for (pos, block) in chunk.blocks.iter_xyz() {
-	let BlockInChunkPos { x, y, z } = pos;
-	let [x, y, z] = [x as usize, y as usize, z as usize];
+for ([x,y,z], block) in chunk.blocks.iter_xyz() {
 	if block_models[&block.id].should_cull {
+		// +1 da der Rand noch einen Bit braucht
 		blocks_mask[Axis::X][y][z] |= 1 << (x + 1);
 		blocks_mask[Axis::Y][x][z] |= 1 << (y + 1);
 		blocks_mask[Axis::Z][x][y] |= 1 << (z + 1);
 	}
+}
+\end{lstlisting}
+
+Die Informationen über die benachbarten Chunks
+bekommen wir wie folgt:
+
+\begin{lstlisting}[language=Rust]
+macro_rules! neighbours {
+	($(($a:ident, $b:ident) in ($axis:expr, $axis_name:ident)
+	=> [$x:expr, $y:expr, $z:expr]);* $(;)?) => {
+		$(
+		for $a in 0..CHUNK_LENGTH {
+			for $b in 0..CHUNK_LENGTH {
+				let mut pos = BlockInChunkPos::new($x, $y, $z);
+
+				pos.$axis_name = CHUNK_LENGTH as u8 - 1;
+				let block = neighbour_chunks[$axis.face_neg()].blocks[pos];
+				if block_models[&block.id].should_cull {
+					blocks_mask[$axis][$a][$b] |= 1;
+				}
+				pos.$axis_name = 0;
+				let block = neighbour_chunks[$axis.face_pos()].blocks[pos];
+				if block_models[&block.id].should_cull {
+					blocks_mask[$axis][$a][$b] |= 1 << (CHUNK_LENGTH + 1);
+				}
+			}
+		}
+		)*
+	};
+}
+neighbours! {
+	(y, z) in (Axis::X, x) => [0, y as u8, z as u8];
+	(x, z) in (Axis::Y, y) => [x as u8, 0, z as u8];
+	(x, y) in (Axis::Z, z) => [x as u8, y as u8, 0];
 }
 \end{lstlisting}
 
@@ -78,8 +110,6 @@ während wir in der ersten Implementation 7 Zugriffe
 pro Voxel brauchten.
 Diese Bitmasken können wir erst erstellen und
 dann dem neuen Thread rübersenden.
-
-% TODO code of neighbour chunks
 
 Insgesamt erhalten wir folgende Performance:
 

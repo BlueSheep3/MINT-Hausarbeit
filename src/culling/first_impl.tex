@@ -8,8 +8,6 @@ noch die Nachbarvoxels, um zu entscheiden,
 welche Seiten sichtbar sind, und erstellt nur
 die sichtbaren Seiten.
 
-% TODO maybe show some of the code here
-
 \begin{figure}[ht]
 	\begin{minipage}[c]{0.49\textwidth}
 		\begin{center}
@@ -36,9 +34,12 @@ Deswegen werden die Chunknetze in separaten
 Zudem können somit mehrere Chunknetze gleichzeitig
 erstellt werden.
 
-\vspace{0.3cm}
+Wir brauchen also erst Zeit, um den Thread zu starten,
+und dann verwenden wir die meiste Zeit, um das
+Chunknetz zu erstellen.
+Wir erhalten folgende Performance:
 
-% TODO transition into the benchmarks
+\vspace{0.3cm}
 
 % dont know how to get rid of this
 % warning or what it means

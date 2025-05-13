@@ -30,12 +30,11 @@ und
 die Anzahl von Nullen oder Einsen am Anfang oder
 Ende eines 32-Bit Integers mit einem einzigen
 Befehl berechnen kann.
-Zudem kann man mit einem einfachen bitweisen ODER
+Zudem kann man mit einem bitweisen ODER
 überprüfen, ob der Streifen in die andere Richtung
 erweitert werden kann, und man kann die Einträge
 in der Bitmaske mit einem bitweisen UND entfernen.
 
-% TODO clean up this code
 \begin{lstlisting}[language=Rust]
 let mut mask_copy = array[j];
 let mut k = 0;
@@ -45,20 +44,17 @@ while mask_copy != 0 {
 	k += zeros;
 
 	let ones = mask_copy.trailing_ones();
-	mask_copy = mask_copy.checked_shr(ones).unwrap_or(0);
+	mask_copy >>= ones;
 	let from = k;
 	k += ones;
 
-	// this entire strip of blocks, as a bitmask.
-	// `<<` doesnt overflow in the way you would expect,
-	// so we use `checked_shl` here instead.
-	// `from != 32`, because otherwise `mask_copy == 0`, so the
-	// left shift there will never overflow (in any problematic way).
-	let ones_exp2 = 1_u32.checked_shl(ones).unwrap_or(0);
-	let strip_mask = (ones_exp2.wrapping_sub(1)) << from;
+	// Dieser gesamte Streifen als Bitmaske.
+	// (Die wirkliche Implementation sieht etwas anders
+	//  aus, da sich overflow von << komisch verhaelt)
+	let strip_mask = ((1 << ones) - 1) << from;
 
-	// expand the strip into a rectangle,
-	// and unset any bits along the way
+	// Erweitere diesen Streifen in der Form eines Rechtecks
+	// und entferne waehrenddessen 1en aus der Bitmaske.
 	array[j] &= !strip_mask;
 	let mut strip_expand = 0;
 	for next_mask in &mut array[(j + 1)..] {
@@ -70,7 +66,7 @@ while mask_copy != 0 {
 		}
 	}
 
-	// ...create a face
+	// erstelle ein Rechteck mit der richtigen Groesse...
 }
 \end{lstlisting}
 
@@ -84,11 +80,8 @@ hier eine Reihe von Voxels
 (oder genauer: sichtbare Seiten)
 brauchen, die nebeneinander sind.
 Deswegen müssen wir aus der Culling Bitmaske
-eine Bitmaske konstruieren,
-die getauschte Koordinaten hat.
+eine neue Bitmaske konstruieren:
 
-% FIXME might be a bit too weird to present this after
-% code above, considering this gets exectuted first
 \begin{lstlisting}[language=Rust]
 let culled_blocks_mask = // maske von Binaeres Culling
 let mut greedy_mask = Box::<FaceMap<ChunkArray2D<u32>>>::default();
@@ -137,8 +130,6 @@ schon mit Greedy Meshing fertig!
 	Greedy Meshing 1       &  5.641821  & 0.425993  \\
 }
 
-% TODO recheck if this count is correct.
-% the improvement seems lower than expected.
 Mit diesem Algorithmus erhalten wir sogar bessere
 Performance, da wir weniger Dreiecke konstruieren
 müssen.

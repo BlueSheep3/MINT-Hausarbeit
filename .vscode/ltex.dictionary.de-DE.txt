@@ -15,3 +15,6 @@ Integers
 Race
 Bevy
 WebGPU
+Chunknetz
+Chunknetzes
+Chunknetze
