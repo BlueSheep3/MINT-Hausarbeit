@@ -18,7 +18,9 @@ Bits in der Bitmaske, die gerade für diese Dreiecke
 verwendet werden, damit sie nicht später für andere
 Dreiecke wieder verwendet werden.
 
-% TODO include some images as a visualization of this
+\begin{center}
+\includegraphics[width=0.95\textwidth]{../assets/greedy/grid_visualization.png}
+\end{center}
 
 Wenn wir eine Bitmaske haben, in der ein
 32-Bit Integer eine Reihe von Seiten darstellt,
@@ -95,22 +97,19 @@ for (face, array2d) in culled_blocks_mask.iter_face() {
 				mask = (mask >> zeros) & !1;
 				k += zeros;
 				greedy_mask[face][k as usize][i] |= 1 << j;
+
+				// Da horizontale Streifen von Voxels haeufiger
+				// vorkommen als vertikale Streifen, mache ich,
+				// dass die Bitmasken in den x- und z-Achsen
+				// beide horizontal ausgerichtet sind.
+				// Deswegen wird in der wirklichen Implementation
+				// fuer die z-Achse `i` und `j` getauscht.
 			}
 		}
 	}
 }
 greedy_mask
 \end{lstlisting}
-% FIXME ensure that this footnote appears on the
-% same page as the code above
-\footnote{
-	Da horizontale Streifen von Voxels häufiger
-	vorkommen als vertikale Streifen, mache ich,
-	dass die Bitmasken in den $x$- und $z$-Achsen
-	beide horizontal ausgerichtet sind.
-	Deswegen wird in der wirklichen Implementation
-	für die $z$-Achse \code{i} und \code{j} getauscht.
-}
 
 Wenn wir nun diese Bitmaske haben, können wir mit dem
 oben genannten Algorithmus die Seiten zu größeren
