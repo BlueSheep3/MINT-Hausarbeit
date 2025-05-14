@@ -1,6 +1,6 @@
 \subsection{Erste Implementation}
 
-Die jetzige Methode ein Polygonnetz der Voxels
+Die jetzige Methode, ein Polygonnetz der Voxels
 zu erstellen besteht darin, für jeden Voxel
 ein Würfelnetz zu erstellen.
 Um dies also zu cullen, überprüft man
@@ -61,14 +61,14 @@ entstehen kann \cite{nomicon_races}.
 Durch diese Synchronisierung müsste aber jeder Zugriff
 zu Chunks auf andere Threads warten, was das gesamte
 Spiel langsamer machen würde. Deswegen werden die
-Daten der nötigen Chunks zu dem Thread rüberkopiert,
+Daten der nötigen Chunks zu dem Thread kopiert,
 was langsam ist, da es sich hier über sehr große Daten
 handelt.
 
 Culling braucht Information aus den benachbarten
 Chunks, um zu entscheiden, ob die Ränder des Chunks
 sichtbar sind. Somit müssen die 6 Nachbarchunks
-auch zu dem Thread rüberkopiert werden, was sehr viele
+auch zu dem Thread kopiert werden, was sehr viele
 Daten sind. Man könnte zwar nur die Voxels
 rüberkopieren, die am Rand des Chunks sind,
 aber wir werden gleich eine Methode sehen,

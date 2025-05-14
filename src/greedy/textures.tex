@@ -24,21 +24,21 @@ Jedoch kann jetzt ein Dreieck für mehrere Voxels
 zuständig sein.
 
 In \cite{yt_bin_greedy_mesher} und
-\cite{gh_bin_greedy_mesher} wurden hierfür separate
+\cite{gh_bin_greedy_mesher} werden hierfür separate
 Polygonnetze und Bitmasken für jede Art von Voxel
-verwendet (und es gab auch keine Texturen, sondern
+verwendet (und es gibt auch keine Texturen, sondern
 nur Farben).
 In meinem Spiel will ich jedoch viele unterschiedliche
 Arten von Voxels haben. Deswegen wäre es unrealistisch
 ein separates Polygonnetz für jede Art zu haben.
-Meine Strategie um dieses Problem zu lösen ist es,
+Meine Strategie, um dieses Problem zu lösen ist es,
 mehrere Texturen auf einem Dreieck anzuzeigen.
 
 % if this is a bad place for a \pagebreak,
 % then insert some \vspace here
 \pagebreak
 
-Um dies zu verstehen, müssen wir erst einmal angucken,
+Um dies zu verstehen, müssen wir erst einmal anschauen,
 wie die Texturen in einem Polygonnetz ohne
 Greedy Meshing angewandt werden.
 Es wird erst ein Array von Texturen erstellt,
@@ -57,9 +57,9 @@ in dem Polygonnetz einen Index,
 den es benutzen kann, um die richtige Textur für
 dieses Voxel in dem Array zu finden.
 
-Die einfachste Lösung wäre also, anstatt nur
+Die einfachste Lösung wäre also, statt nur
 einen Index zu speichern, ein 2 dimensionales Array
-von Indexen zu speichern für jeden Voxel,
+von Indexen zu speichern, für jeden Voxel,
 der von diesem Dreieck dargestellt wird.
 Leider geht dies nicht, da alle Informationen,
 die man für einzelne Dreiecke (also nicht das
@@ -78,7 +78,7 @@ Somit würden wir sehr viele Daten verschwenden.
 
 Wir müssen also ein Array für das gesamte
 Polygonnetz verwenden.
-Mein erster Gedanke dabei war es ein \code{Vec}
+Mein erster Gedanke dabei war es, ein \code{Vec}
 rüber zu senden, um so ein Array mit dynamischer
 Länge zu erhalten, jedoch meint Bevy:\\
 \code{"runtime-sized array can't be used in uniform buffers"}\cite{no_runtime_sized}\\
@@ -94,7 +94,7 @@ darzustellen, verwenden wir das Format\\
 Dieses Format hat nur einen roten Kanal, der als
 \code{u32} gespeichert wird.
 
-Wenn die Textur 3 dimensional wäre könnte somit
+Wenn die Textur 3 dimensional wäre, könnte somit
 jedes Dreieck einen $z$-Index speichern und die
 $x$-$y$-Ebene von der Textur wäre die Textur des Voxels.
 Jedoch muss bei einer 3 dimensionalen Textur jede

@@ -1,7 +1,7 @@
 \subsection{Binäres Greedy Meshing}
 
-Ich habe erst geplant eine einfachere Implementation
-von Greedy Meshing zu machen, bevor ich es mit
+Ich habe erst geplant, eine einfachere Implementation
+von Greedy Meshing zu erstellen, bevor ich dies mit
 einem binären Algorithmus mache, aber dadurch,
 dass das Culling schon binär ist, ist die binäre
 Greedy Meshing Implementation sogar einfacher als
@@ -24,7 +24,7 @@ Dreiecke wieder verwendet werden.
 
 Wenn wir eine Bitmaske haben, in der ein
 32-Bit Integer eine Reihe von Seiten darstellt,
-dann geht es sehr schnell die Streifen zu erkennen,
+dann geht es sehr schnell, die Streifen zu erkennen,
 da man mit den x86-Befehlen
 \href{https://www.felixcloutier.com/x86/bsf}{BSF} \cite{bsf}
 und
@@ -72,15 +72,15 @@ while mask_copy != 0 {
 }
 \end{lstlisting}
 
-Vielleicht ist ihnen aber schon aufgefallen,
+Vielleicht ist Ihnen aber schon aufgefallen,
 dass die Bitmaske, die wir für das Binäre Culling
-verwendet haben nicht in die richtige Richtung
+verwendet haben, nicht in die richtige Richtung
 ausgerichtet ist.
 Dabei ist nämlich ein Integer eine Reihe von Voxels,
 die sich gegenseitig verdecken können, während wir
 hier eine Reihe von Voxels
 (oder genauer: sichtbare Seiten)
-brauchen, die nebeneinander sind.
+brauchen, die nebeneinander liegen.
 Deswegen müssen wir aus der Culling Bitmaske
 eine neue Bitmaske konstruieren:
 
@@ -115,7 +115,7 @@ Wenn wir nun diese Bitmaske haben, können wir mit dem
 oben genannten Algorithmus die Seiten zu größeren
 Seiten kombinieren.
 Wenn wir also diese Information benutzen,
-um die Dreiecke größer zu machen sind wir
+um die Dreiecke größer zu machen, sind wir
 schon mit Greedy Meshing fertig!
 
 \vspace{0.5cm}
