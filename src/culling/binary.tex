@@ -19,6 +19,12 @@ Der Vorteil davon ist, dass wir somit in der
 $x$-Achse binäre Arithmetik anwenden können für
 das Culling, was sehr schnell ist.
 
+Die Daten sind also wie folgt ausgelegt:
+Für jede Achse gibt es ein $32 \times 32$ Array
+von 64-Bit Integers, wobei nur die ersten 34 Bits
+verwendet werden, um zu speichern, ob sich bei den
+Positionen von $-1$ bis $33$ ein Voxel befindet.
+
 Beim Culling müssen wir die Seiten von
 Voxels finden, die nicht von einem anderen Voxel
 verdeckt werden.
@@ -39,7 +45,7 @@ Definiert man also eine Funktion mit
 die von rechts sichtbar sind.
 Das \code{((..) >> 1) as u32} ist dann zuständig,
 die einzelnen Bits, die den Rand des Chunks beschreiben,
-zu entfernen, da diese nicht mehr gebraucht sind.
+zu entfernen, da diese nicht mehr gebraucht werden.
 Diese neue Bitmaske kann dann wie folgt verwendet
 werden, um die Seiten der Voxels zu kreieren:
 
